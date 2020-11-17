@@ -1,9 +1,7 @@
-#if canImport(Combine)
-  import Combine
-  import CombineSchedulers
+  import OpenCombine
+  import OpenCombineSchedulers
   import XCTest
 
-  @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
   final class UISchedulerTests: XCTestCase {
     func testVoidsThreadHop() {
       var worked = false
@@ -31,4 +29,3 @@
       XCTAssertTrue(worked)
     }
   }
-#endif

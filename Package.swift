@@ -3,7 +3,7 @@
 import PackageDescription
 
 let package = Package(
-  name: "combine-schedulers",
+  name: "opencombine-schedulers",
   platforms: [
     .iOS(.v10),
     .macOS(.v10_12),
@@ -12,15 +12,21 @@ let package = Package(
   ],
   products: [
     .library(
-      name: "CombineSchedulers",
-      targets: ["CombineSchedulers"]
+      name: "OpenCombineSchedulers",
+      targets: ["OpenCombineSchedulers"]
     )
   ],
+  dependencies: [
+    .package(url: "https://github.com/OpenCombine/OpenCombine.git", from: "0.11.0")
+  ],
   targets: [
-    .target(name: "CombineSchedulers"),
+    .target(
+      name: "OpenCombineSchedulers",
+      dependencies: ["OpenCombine", "OpenCombineDispatch", "OpenCombineFoundation"]
+    ),
     .testTarget(
-      name: "CombineSchedulersTests",
-      dependencies: ["CombineSchedulers"]
+      name: "OpenCombineSchedulersTests",
+      dependencies: ["OpenCombineSchedulers"]
     ),
   ]
 )

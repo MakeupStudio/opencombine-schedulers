@@ -1,9 +1,7 @@
-#if canImport(Combine)
-  import Combine
-  import CombineSchedulers
+  import OpenCombine
+  import OpenCombineSchedulers
   import XCTest
 
-  @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
   final class TimerTests: XCTestCase {
     var cancellables: Set<AnyCancellable> = []
 
@@ -17,7 +15,7 @@
       let timerExpectation = self.expectation(description: "DispatchQueueTimer")
       timerExpectation.expectedFulfillmentCount = 3
 
-      DispatchQueue.main.timerPublisher(every: 0.1)
+      DispatchQueue.main.ocombine.timerPublisher(every: 0.1)
         .autoconnect()
         .sink { _ in
           output.append(output.count)
@@ -35,7 +33,7 @@
       let timerExpectation = self.expectation(description: "RunLoopTimer")
       timerExpectation.expectedFulfillmentCount = 3
 
-      Publishers.Timer(every: 0.1, scheduler: RunLoop.main)
+      Publishers.Timer(every: 0.1, scheduler: RunLoop.main.ocombine)
         .autoconnect()
         .sink { _ in
           output.append(output.count)
@@ -49,7 +47,7 @@
     }
 
     func testWithTestScheduler() {
-      let scheduler = DispatchQueue.testScheduler
+      let scheduler = DispatchQueue.OCombine.testScheduler
       var output: [UInt64] = []
 
       Publishers.Timer(every: 1, scheduler: scheduler)
@@ -75,38 +73,40 @@
       )
     }
 
-    func testInterleavingTimers() {
-      let scheduler = DispatchQueue.testScheduler
-
-      var output: [Int] = []
-
-      Publishers.MergeMany(
-        Publishers.Timer(every: .seconds(2), scheduler: scheduler)
-          .autoconnect()
-          .handleEvents(receiveOutput: { _ in output.append(1) }),
-        Publishers.Timer(every: .seconds(3), scheduler: scheduler)
-          .autoconnect()
-          .handleEvents(receiveOutput: { _ in output.append(2) })
-      )
-      .sink { _ in }
-      .store(in: &self.cancellables)
-
-      scheduler.advance(by: 1)
-      XCTAssertEqual(output, [])
-      scheduler.advance(by: 1)
-      XCTAssertEqual(output, [1])
-      scheduler.advance(by: 1)
-      XCTAssertEqual(output, [1, 2])
-      scheduler.advance(by: 1)
-      XCTAssertEqual(output, [1, 2, 1])
-      scheduler.advance(by: 1)
-      XCTAssertEqual(output, [1, 2, 1])
-      scheduler.advance(by: 1)
-      XCTAssertEqual(output, [1, 2, 1, 1, 2])
-    }
+    // OpenCombine.MergeMany is not available yet.
+    
+//    func testInterleavingTimers() {
+//      let scheduler = DispatchQueue.OCombine.testScheduler
+//
+//      var output: [Int] = []
+//
+//      Publishers.MergeMany(
+//        Publishers.Timer(every: .seconds(2), scheduler: scheduler)
+//          .autoconnect()
+//          .handleEvents(receiveOutput: { _ in output.append(1) }),
+//        Publishers.Timer(every: .seconds(3), scheduler: scheduler)
+//          .autoconnect()
+//          .handleEvents(receiveOutput: { _ in output.append(2) })
+//      )
+//      .sink { _ in }
+//      .store(in: &self.cancellables)
+//
+//      scheduler.advance(by: 1)
+//      XCTAssertEqual(output, [])
+//      scheduler.advance(by: 1)
+//      XCTAssertEqual(output, [1])
+//      scheduler.advance(by: 1)
+//      XCTAssertEqual(output, [1, 2])
+//      scheduler.advance(by: 1)
+//      XCTAssertEqual(output, [1, 2, 1])
+//      scheduler.advance(by: 1)
+//      XCTAssertEqual(output, [1, 2, 1])
+//      scheduler.advance(by: 1)
+//      XCTAssertEqual(output, [1, 2, 1, 1, 2])
+//    }
 
     func testTimerCancellation() {
-      let scheduler = DispatchQueue.testScheduler
+      let scheduler = DispatchQueue.OCombine.testScheduler
 
       var count = 0
 
@@ -124,7 +124,7 @@
     }
 
     func testTimerCompletion() {
-      let scheduler = DispatchQueue.testScheduler
+      let scheduler = DispatchQueue.OCombine.testScheduler
 
       var count = 0
 
@@ -141,4 +141,3 @@
       XCTAssertEqual(count, 3)
     }
   }
-#endif

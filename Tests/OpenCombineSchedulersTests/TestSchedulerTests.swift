@@ -1,14 +1,13 @@
-#if canImport(Combine)
-  import Combine
-  import CombineSchedulers
+#if canImport(OpenCombine)
+  import OpenCombine
+  import OpenCombineSchedulers
   import XCTest
 
-  @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-  final class CombineSchedulerTests: XCTestCase {
+  final class OpenCombineSchedulerTests: XCTestCase {
     var cancellables: Set<AnyCancellable> = []
 
     func testAdvance() {
-      let scheduler = DispatchQueue.testScheduler
+      let scheduler = DispatchQueue.OCombine.testScheduler
 
       var value: Int?
       Just(1)
@@ -36,7 +35,7 @@
     }
 
     func testRunScheduler() {
-      let scheduler = DispatchQueue.testScheduler
+      let scheduler = DispatchQueue.OCombine.testScheduler
 
       var value: Int?
       Just(1)
@@ -56,7 +55,7 @@
     }
 
     func testDelay0Advance() {
-      let scheduler = DispatchQueue.testScheduler
+      let scheduler = DispatchQueue.OCombine.testScheduler
 
       var value: Int?
       Just(1)
@@ -72,7 +71,7 @@
     }
 
     func testSubscribeOnAdvance() {
-      let scheduler = DispatchQueue.testScheduler
+      let scheduler = DispatchQueue.OCombine.testScheduler
 
       var value: Int?
       Just(1)
@@ -88,7 +87,7 @@
     }
 
     func testReceiveOnAdvance() {
-      let scheduler = DispatchQueue.testScheduler
+      let scheduler = DispatchQueue.OCombine.testScheduler
 
       var value: Int?
       Just(1)
@@ -104,7 +103,7 @@
     }
 
     func testDispatchQueueDefaults() {
-      let scheduler = DispatchQueue.testScheduler
+      let scheduler = DispatchQueue.OCombine.testScheduler
       scheduler.advance(by: .nanoseconds(0))
 
       XCTAssertEqual(
@@ -118,7 +117,7 @@
     }
 
     func testTwoIntervalOrdering() {
-      let testScheduler = DispatchQueue.testScheduler
+      let testScheduler = DispatchQueue.OCombine.testScheduler
 
       var values: [Int] = []
 

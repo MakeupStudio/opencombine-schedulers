@@ -11,12 +11,11 @@
 //===----------------------------------------------------------------------===//
 
 // Only support 64bit
-#if !(os(iOS) && (arch(i386) || arch(arm))) && canImport(Combine)
+#if !(os(iOS) && (arch(i386) || arch(arm))) && canImport(OpenCombine)
   @_exported import Foundation  // Clang module
-  import Combine
+  import OpenCombine
   import Foundation
 
-  @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
   extension Scheduler {
     /// Returns a publisher that repeatedly emits the scheduler's current time on the given
     /// interval.
@@ -33,11 +32,15 @@
       tolerance: SchedulerTimeType.Stride? = nil,
       options: SchedulerOptions? = nil
     ) -> Publishers.Timer<Self> {
-      Publishers.Timer(every: interval, tolerance: tolerance, scheduler: self, options: options)
+      Publishers.Timer(
+        every: interval,
+        tolerance: tolerance,
+        scheduler: self,
+        options: options
+      )
     }
   }
 
-  @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
   extension Publishers {
     /// A publisher that emits a scheduler's current time on a repeating interval.
     ///
@@ -54,7 +57,7 @@
     ///     Publishers.Timer(every: .seconds(1), scheduler: DispatchQueue.main)
     ///       .sink { print("Timer", $0) }
     ///
-    /// But more importantly, you can use it with `TestScheduler` so that any Combine code you write
+    /// But more importantly, you can use it with `TestScheduler` so that any OpenCombine code you write
     /// involving timers becomes more testable. This shows how we can easily simulate the idea of
     /// moving time forward 1,000 seconds in a timer:
     ///

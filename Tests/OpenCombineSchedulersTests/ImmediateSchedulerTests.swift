@@ -1,12 +1,11 @@
-#if canImport(Combine)
-  import Combine
-  import CombineSchedulers
+#if canImport(OpenCombine)
+  import OpenCombine
+  import OpenCombineSchedulers
   import XCTest
 
-  @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
   final class ImmediateSchedulerTests: XCTestCase {
     func testSchedulesImmediately() {
-      let scheduler = DispatchQueue.immediateScheduler
+      let scheduler = DispatchQueue.OCombine.immediateScheduler
       var worked = 0
 
       scheduler.schedule { worked += 1 }
